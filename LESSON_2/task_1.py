@@ -1,8 +1,7 @@
-import torch
 import torch.nn as nn
 
 
-def creare_model():
+def create_model():
     model = nn.Sequential(
         nn.Linear(100, 10),
         nn.ReLU(),
