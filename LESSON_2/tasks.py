@@ -1,3 +1,4 @@
+import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 from torch.optim import Optimizer
@@ -24,5 +25,18 @@ def train(model: nn.Module, data_loader: DataLoader, optimizer: Optimizer, loss_
         loss.backward()
         print(f'{loss.item():.5f}')
         optimizer.step()
+
+    return total_loss / len(data_loader)
+
+
+@torch.inference_mode()
+def evaluate(model: nn.Module, data_loader: DataLoader, loss_fn):
+    model.eval()
+    total_loss = 0
+
+    for i, (x, y) in enumerate(data_loader):
+        output = model(x)
+        loss = loss_fn(output, y)
+        total_loss += loss.item()
 
     return total_loss / len(data_loader)
