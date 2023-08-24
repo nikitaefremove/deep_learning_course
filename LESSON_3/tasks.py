@@ -74,12 +74,31 @@ valid_loader = DataLoader(mnist_valid, batch_size=64, shuffle=False)
 
 # Create model function
 def create_mlp_model():
-    model = nn.Sequential(
+    return nn.Sequential(
+        nn.Flatten(),
+        nn.Linear(28 * 28, 512),  # 28*28 - размер изображений MNIST
+        nn.ReLU(),
+        nn.Linear(512, 256),
+        nn.ReLU(),
+        nn.Linear(256, 128),
+        nn.ReLU(),
+        nn.Linear(128, 10)  # 10 классов в MNIST (цифры от 0 до 9)
+    )
+
+    return model
+
+
+def create_conv_model():
+    return nn.Sequential(
         nn.Conv2d(in_channels=1, out_channels=32, kernel_size=5),
         nn.ReLU(),
         nn.MaxPool2d(kernel_size=2),
 
         nn.Conv2d(in_channels=32, out_channels=64, kernel_size=5),
+        nn.ReLU(),
+        nn.MaxPool2d(kernel_size=2),
+
+        nn.Conv2d(in_channels=64, out_channels=128, kernel_size=5),
         nn.ReLU(),
         nn.MaxPool2d(kernel_size=2),
 
@@ -89,16 +108,14 @@ def create_mlp_model():
         nn.Linear(256, 10)
     )
 
-    return model
 
-
-model = create_mlp_model()
+model = create_conv_model()
 
 # Define a loss function and optimizer
 optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 loss_fn = nn.CrossEntropyLoss()
 
-num_epoch = 2
+num_epoch = 15
 train_loss_history, valid_loss_history = [], []
 valid_accuracy_history = []
 
@@ -130,7 +147,8 @@ for epoch in range(num_epoch):
           f"Valid Accuracy: {valid_accuracy:.5f}")
 
 # Save the weights of model
-torch.save(model.state_dict(), "mnist_mlp_model.pth")
+# torch.save(model.state_dict(), "mnist_mlp_model.pth")
+torch.save(model.state_dict(), "mnist_cnn_model.pth")
 
 # Load weights of model
 # model.load_state_dict(torch.load("mnist_mlp_model.pth"))
