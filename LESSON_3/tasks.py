@@ -96,3 +96,39 @@ def create_mlp_model():
 
 
 model = create_mlp_model()
+
+# Define a loss function and optimizer
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+loss_fn = nn.CrossEntropyLoss()
+
+num_epoch = 2
+train_loss_history, valid_loss_history = [], []
+valid_accuracy_history = []
+
+start = perf_counter()
+
+for epoch in range(num_epoch):
+    train_loss = train(model, train_loader, optimizer, loss_fn)
+    valid_loss = evaluate(model, valid_loader, loss_fn)
+
+    # Compute validation accuracy
+    correct = 0
+    total = 0
+    with torch.inference_mode():
+        for x, y in valid_loader:
+            outputs = model(x)
+            _, predicted = torch.max(outputs.data, 1)
+            total += y.size(0)
+            correct += (predicted == y).sum().item()
+
+    valid_accuracy = correct / total
+
+    train_loss_history.append(train_loss)
+    valid_loss_history.append(valid_loss)
+    valid_accuracy_history.append(valid_accuracy)
+
+    print(f"Epoch: {epoch + 1}, "
+          f"Train Loss: {train_loss:.5f}, "
+          f"Valid Loss: {valid_loss:.5f}, "
+          f"Valid Accuracy: {valid_accuracy:.5f}")
+
