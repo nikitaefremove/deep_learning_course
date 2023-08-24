@@ -5,6 +5,7 @@ from time import perf_counter
 from torch.utils.data import DataLoader
 from torchvision.datasets import MNIST
 from torch.optim import Optimizer
+import matplotlib.pyplot as plt
 
 
 # Get count of parameters of convolutional Neural Network
@@ -117,7 +118,21 @@ valid_accuracy_history = []
 
 start = perf_counter()
 
-for epoch in range(num_epoch):
+num_epochs = 15
+
+train_loss_history, valid_loss_history = [], []
+valid_accuracy_history = []
+
+start = perf_counter()
+
+num_epochs = 15
+
+train_loss_history, valid_loss_history = [], []
+valid_accuracy_history = []
+
+start = perf_counter()
+
+for epoch in range(num_epochs):
     train_loss = train(model, train_loader, optimizer, loss_fn)
     valid_loss = evaluate(model, valid_loader, loss_fn)
 
@@ -141,6 +156,12 @@ for epoch in range(num_epoch):
           f"Train Loss: {train_loss:.5f}, "
           f"Valid Loss: {valid_loss:.5f}, "
           f"Valid Accuracy: {valid_accuracy:.5f}")
+
+    if valid_accuracy >= 0.993:
+        print("Stopping training, validation accuracy reached the threshold!")
+        break
+
+print(f'Total training and evaluation time {perf_counter() - start:.5f}')
 
 # Save the weights of model
 # torch.save(model.state_dict(), "mnist_mlp_model.pth")

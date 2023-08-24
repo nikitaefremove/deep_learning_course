@@ -14,6 +14,5 @@ def create_conv_model():
         nn.Flatten(),
         nn.Linear(4 * 4 * 64, 256),
         nn.ReLU(),
-        nn.Dropout(0.5),
         nn.Linear(256, 10)
     )
