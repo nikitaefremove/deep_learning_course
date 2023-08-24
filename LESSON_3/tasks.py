@@ -98,10 +98,6 @@ def create_conv_model():
         nn.ReLU(),
         nn.MaxPool2d(kernel_size=2),
 
-        nn.Conv2d(in_channels=64, out_channels=128, kernel_size=5),
-        nn.ReLU(),
-        nn.MaxPool2d(kernel_size=2),
-
         nn.Flatten(),
         nn.Linear(4 * 4 * 64, 256),
         nn.ReLU(),
