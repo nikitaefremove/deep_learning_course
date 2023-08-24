@@ -1,9 +1,6 @@
-import numpy as np
 import torch
 import torch.nn as nn
 import torchvision.transforms as T
-from PIL import Image
-from matplotlib import cm
 from time import perf_counter
 from torch.utils.data import DataLoader
 from torchvision.datasets import MNIST
@@ -132,3 +129,8 @@ for epoch in range(num_epoch):
           f"Valid Loss: {valid_loss:.5f}, "
           f"Valid Accuracy: {valid_accuracy:.5f}")
 
+# Save the weights of model
+torch.save(model.state_dict(), "mnist_mlp_model.pth")
+
+# Load weights of model
+# model.load_state_dict(torch.load("mnist_mlp_model.pth"))
