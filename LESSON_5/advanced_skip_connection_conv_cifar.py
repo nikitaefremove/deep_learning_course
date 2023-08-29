@@ -40,13 +40,25 @@ class Model(nn.Module):
             nn.ReLU()
         )
 
+        # Block 4
         self.block_4 = nn.Sequential(
             nn.Conv2d(in_channels=128, out_channels=256, kernel_size=3, padding=1),  # 4 x 4 x 256
-            nn.BatchNorm2d(128),
+            nn.BatchNorm2d(256),
             nn.ReLU(),
 
             nn.Conv2d(in_channels=256, out_channels=256, kernel_size=3, padding=1),  # 4 x 4 x 256
             nn.BatchNorm2d(256),
+            nn.ReLU()
+        )
+
+        # Block 5
+        self.block_5 = nn.Sequential(
+            nn.Conv2d(in_channels=256, out_channels=512, kernel_size=3, padding=1),  # 4 x 4 x 512
+            nn.BatchNorm2d(512),
+            nn.ReLU(),
+
+            nn.Conv2d(in_channels=512, out_channels=512, kernel_size=3, padding=1),  # 4 x 4 x 512
+            nn.BatchNorm2d(512),
             nn.ReLU()
         )
 
@@ -60,11 +72,11 @@ class Model(nn.Module):
         self.flat = nn.Flatten()
 
         # Fully connected layers
-        self.fc1 = nn.Linear(4 * 4 * 256, 1028)
-        self.fc2 = nn.Linear(1028, 10)
+        self.fc1 = nn.Linear(4 * 4 * 512, 1024)
+        self.fc2 = nn.Linear(1024, 10)
 
         # Batch normalization layer for the fully connected layer
-        self.batch1d = nn.BatchNorm1d(1028)
+        self.batch1d = nn.BatchNorm1d(1024)
 
         # ReLU Activation
         self.relu = nn.ReLU()
@@ -91,7 +103,11 @@ class Model(nn.Module):
 
         x = self.block_4(x)  # Output: 4 x 4 x 256
 
-        x = self.flat(x)  # Output: 1 x (4 * 4 * 256) = 1 x 4096
+        x = self.drop(x)
+
+        x = self.block_5(x)  # Output: 4 x 4 x 512
+
+        x = self.flat(x)  # Output: 1 x (4 * 4 * 512) = 1 x 4096
 
         x = self.fc1(x)  # Output: 1 x 1028
 
