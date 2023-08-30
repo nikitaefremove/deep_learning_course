@@ -15,48 +15,42 @@ class Model(nn.Module):
 
         # BLOCK 2
         self.block2 = nn.Sequential(
-            nn.Conv2d(in_channels=32, out_channels=32, kernel_size=3, padding=1),  # 32 x 32 x 32
+            nn.Conv2d(in_channels=32, out_channels=32, kernel_size=3, padding=1),  # 16 x 16 x 32
             nn.ReLU(),
-            nn.BatchNorm2d(32)
+            nn.BatchNorm2d(32),
+            nn.MaxPool2d(2),
+            nn.Dropout2d(p=0.25)
         )
 
         # BLOCK 3
         self.block3 = nn.Sequential(
-            nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, padding=1),  # 32 x 32 x 64
-            nn.ReLU(),
-            nn.BatchNorm2d(64),
-            nn.MaxPool2d(2),  # 16 x 16 x 64
-            nn.Dropout2d(p=0.25)
-        )
-
-        # BLOCK 4
-        self.block4 = nn.Sequential(
-            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, padding=1),  # 16 x 16 x 64
+            nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, padding=1),  # 16 x 16 x 64
             nn.ReLU(),
             nn.BatchNorm2d(64)
         )
 
-        # BLOCK 5
-        self.block5 = nn.Sequential(
-            nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, padding=1),  # 16 x 16 x 128
-            nn.BatchNorm2d(128),
+        # BLOCK 4
+        self.block4 = nn.Sequential(
+            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, padding=1),  # 8 x 8 x 64
             nn.ReLU(),
-            nn.MaxPool2d(2),  # 8 x 8 x 128
+            nn.BatchNorm2d(64),
+            nn.MaxPool2d(2),
             nn.Dropout2d(p=0.25)
         )
 
-        # BLOCK 6
-        self.block6 = nn.Sequential(
-            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=3, padding=1),  # 8 x 8 x 128
+        # BLOCK 5
+        self.block5 = nn.Sequential(
+            nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, padding=1),  # 8 x 8 x 128
             nn.BatchNorm2d(128),
             nn.ReLU()
         )
 
-        self.block7 = nn.Sequential(
-            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=3, padding=1),  # 8 x 8 x 128
+        # BLOCK 6
+        self.block6 = nn.Sequential(
+            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=3, padding=1),  # 4 x 4 x 128
             nn.BatchNorm2d(128),
             nn.ReLU(),
-            nn.MaxPool2d(2),  # 4 x 4 x 128
+            nn.MaxPool2d(2),
             nn.Dropout2d(p=0.25)
         )
 
@@ -73,12 +67,11 @@ class Model(nn.Module):
     def forward(self, x):
         # Blocks
         x = self.block1(x)  # 32 x 32 x 32
-        x = self.block2(x) + x  # 32 x 32 x 32
+        x = self.block2(x) + x  # 16 x 16 x 32
         x = self.block3(x)  # 16 x 16 x 64
-        x = self.block4(x) + x  # 16 x 16 x 64
+        x = self.block4(x) + x  # 8 x 8 x 64
         x = self.block5(x)  # 8 x 8 x 128
-        x = self.block6(x) + x  # 8 x 8 x 128
-        x = self.block7(x)  # 4 x 4 x 128
+        x = self.block6(x) + x  # 4 x 4 x 128
 
         # Fully connected layers
         x = self.fc(x)  # 4 x 4 x 128 -> 10
